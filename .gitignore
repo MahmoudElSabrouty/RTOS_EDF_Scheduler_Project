@@ -50,3 +50,16 @@ modules.order
 Module.symvers
 Mkfile.old
 dkms.conf
+bin/gpio.crf
+bin/gpio_cfg.crf
+bin/heap_2.crf
+bin/list.crf
+bin/main.crf
+bin/partest.crf
+bin/port.crf
+bin/queue.crf
+bin/RTOSDemo.build_log.htm
+bin/RTOSDemo.htm
+bin/RTOSDemo_RTOSDemo_THUMB.dep
+bin/serial.crf
+bin/tasks.crf
