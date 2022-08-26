@@ -41,8 +41,7 @@
  *
  * See http://www.freertos.org/a00110.html
  *----------------------------------------------------------*/
-#define HIGHEST_PRIORITY_IDLE_TASK	100 /*Shall be increased to maintain IDLE task with highest Priority */
-#define configUSE_EDF_SCHEDULER	1
+
 #define configUSE_PREEMPTION		1
 #define configUSE_IDLE_HOOK			0
 #define configUSE_TICK_HOOK			1
