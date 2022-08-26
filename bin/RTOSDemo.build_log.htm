@@ -1,0 +1,94 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.29.0.0
+Copyright (C) 2019 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: mahmoud Abdelhalim, MF, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.29.0.0
+Toolchain Path:  C:\Keil_v5_RTOS\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 6 (build 750)
+Assembler:       Armasm.exe V5.06 update 6 (build 750)
+Linker/Locator:  ArmLink.exe V5.06 update 6 (build 750)
+Library Manager: ArmAr.exe V5.06 update 6 (build 750)
+Hex Converter:   FromElf.exe V5.06 update 6 (build 750)
+CPU DLL:         SARM.DLL V5.29.0.0
+Dialog DLL:      DARMP.DLL V1.53.0.0
+Target DLL:      UL2ARM.DLL V1.74.10.0
+Dialog DLL:      TARMP.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+D:\MF\Personal\Intellectual\Embedded_SW\EgFWD\Advanced Embedded Systems\Course Material\RTOS\RTOS_SourceFiles\FreeRTOSv202112.00\FreeRTOS\Demo\ARM7_LPC2129_Keil_RVDS\RTOSDemo.uvproj
+Project File Date:  08/08/2022
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 6 (build 750)', folder: 'C:\Keil_v5_RTOS\ARM\ARMCC\Bin'
+Rebuild target 'RTOSDemo_THUMB'
+compiling GPIO_cfg.c...
+assembling serialISR.s...
+assembling Startup.s...
+compiling main.c...
+Starter_Files_V1\source\main.c(101): warning:  #177-D: variable "startTime"  was declared but never referenced
+  	int startTime =0, endTime =0;
+Starter_Files_V1\source\main.c(101): warning:  #177-D: variable "endTime"  was declared but never referenced
+  	int startTime =0, endTime =0;
+Starter_Files_V1\source\main.c(127): warning:  #550-D: variable "startTime"  was set but never used
+  	int startTime =0, endTime =0;
+Starter_Files_V1\source\main.c(127): warning:  #177-D: variable "endTime"  was declared but never referenced
+  	int startTime =0, endTime =0;
+Starter_Files_V1\source\main.c: 4 warnings, 0 errors
+compiling GPIO.c...
+Starter_Files_V1\source\GPIO.c(49): warning:  #127-D: expected a statement
+  		}
+Starter_Files_V1\source\GPIO.c: 1 warning, 0 errors
+compiling ParTest.c...
+compiling serial.c...
+Starter_Files_V1\source\serial.c(185): warning:  #550-D: variable "cChar"  was set but never used
+  signed char cChar;
+Starter_Files_V1\source\serial.c: 1 warning, 0 errors
+assembling portASM.s...
+compiling list.c...
+compiling tasks.c...
+..\..\Source\tasks.c(1147): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+          prvAddTaskToReadyList( pxNewTCB );
+..\..\Source\tasks.c(1688): error:  #20: identifier "pxReadyTasksLists" is undefined
+                  if( listIS_CONTAINED_WITHIN( &( pxReadyTasksLists[ uxPriorityUsedOnEntry ] ), &( pxTCB->xStateListItem ) ) != pdFALSE )
+..\..\Source\tasks.c(1705): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(1906): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(1992): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(2268): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(2567): error:  #20: identifier "pxReadyTasksLists" is undefined
+                      uxTask += prvListTasksWithinSingleList( &( pxTaskStatusArray[ uxTask ] ), &( pxReadyTasksLists[ uxQueue ] ), eReady );
+..\..\Source\tasks.c(2842): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(3092): error:  #20: identifier "pxReadyTasksLists" is undefined
+          taskSELECT_HIGHEST_PRIORITY_TASK(); /*lint !e9079 void * is used as this macro is used with timers and co-routines too.  Alignment is known to be fine as the type of the pointer stored and retrieved is the same. */
+..\..\Source\tasks.c(3226): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+          prvAddTaskToReadyList( pxUnblockedTCB );
+..\..\Source\tasks.c(3305): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+      prvAddTaskToReadyList( pxUnblockedTCB );
+..\..\Source\tasks.c(3686): warning:  #177-D: variable "uxPriority"  was declared but never referenced
+      UBaseType_t uxPriority;
+..\..\Source\tasks.c(4967): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                  prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(5114): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c(5205): error:  #136: struct "tskTaskControlBlock"  has no field "xGenericListItem"
+                      prvAddTaskToReadyList( pxTCB );
+..\..\Source\tasks.c: 1 warning, 14 errors
+compiling heap_2.c...
+compiling port.c...
+compiling queue.c...
+".\bin\RTOSDemo.axf" - 14 Error(s), 7 Warning(s).
+Target not created.
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
