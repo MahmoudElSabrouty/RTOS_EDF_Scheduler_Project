@@ -92,6 +92,10 @@
     #error configMAX_PRIORITIES must be defined to be greater than or equal to 1.
 #endif
 
+#ifndef configUSE_EDF_SCHEDULER
+    #error Missing definition:  configUSE_EDF_SCHEDULER must be defined in FreeRTOSConfig.h as either 1 or 0.  As part of our EDF Scheduler Project.
+#endif
+
 #ifndef configUSE_PREEMPTION
     #error Missing definition:  configUSE_PREEMPTION must be defined in FreeRTOSConfig.h as either 1 or 0.  See the Configuration section of the FreeRTOS API documentation for details.
 #endif
