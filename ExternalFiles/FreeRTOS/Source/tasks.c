@@ -132,6 +132,7 @@
     } /* taskRECORD_READY_PRIORITY */
 
 /*-----------------------------------------------------------*/
+#if (configUSE_EDF_SCHEDULER !=1)
 
     #define taskSELECT_HIGHEST_PRIORITY_TASK()                                \
     {                                                                         \
@@ -149,7 +150,7 @@
         listGET_OWNER_OF_NEXT_ENTRY( pxCurrentTCB, &( pxReadyTasksLists[ uxTopPriority ] ) ); \
         uxTopReadyPriority = uxTopPriority;                                                   \
     } /* taskSELECT_HIGHEST_PRIORITY_TASK */
-
+#endif
 /*-----------------------------------------------------------*/
 
 /* Define away taskRESET_READY_PRIORITY() and portRESET_READY_PRIORITY() as
@@ -228,7 +229,7 @@
 #else
 
 #define prvAddTaskToReadyList( pxTCB ) /*xGenericListIteam must contain the deadline value */ \
-vListInsert( &(xReadyTasksListEDF), &( ( pxTCB )->xGenericListItem ) )
+vListInsert( &(xReadyTasksListEDF), &( ( pxTCB )->xStateListItem ) )
 		
 #endif
 /*-----------------------------------------------------------*/
@@ -831,7 +832,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 
 					currentTick = xTaskGetTickCount();
 					/*E.C. : insert the period value in the generic list iteam before to add the task in RL: */
-					listSET_LIST_ITEM_VALUE( &( ( pxNewTCB)->xGenericListItem ), ( pxNewTCB
+					listSET_LIST_ITEM_VALUE( &( ( pxNewTCB)->xStateListItem ), ( pxNewTCB
 																	)->xTaskPeriod + currentTick);
 					
 					  prvAddNewTaskToReadyList( pxNewTCB );
@@ -1634,7 +1635,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 #endif /* INCLUDE_uxTaskPriorityGet */
 /*-----------------------------------------------------------*/
 
-#if ( INCLUDE_uxTaskPriorityGet == 1 )
+#if (( INCLUDE_uxTaskPriorityGet == 1) && (configUSE_EDF_SCHEDULER != 1 ))
 
     UBaseType_t uxTaskPriorityGetFromISR( const TaskHandle_t xTask )
     {
@@ -1674,7 +1675,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 #endif /* INCLUDE_uxTaskPriorityGet */
 /*-----------------------------------------------------------*/
 
-#if ( INCLUDE_vTaskPrioritySet == 1 )
+#if (( INCLUDE_vTaskPrioritySet == 1 ) & (configUSE_EDF_SCHEDULER != 1 ))
 
     void vTaskPrioritySet( TaskHandle_t xTask,
                            UBaseType_t uxNewPriority )
@@ -2932,8 +2933,8 @@ BaseType_t xTaskIncrementTick( void )
                 {
 
 			#ifdef		configUSE_EDF_SCHEDULER
-					XXXX
-					/*Note: 
+
+					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
 					- need to perform context Switching based on DL 
 					- RTOS execute Head of the task make sure it's the required one
@@ -2965,8 +2966,8 @@ BaseType_t xTaskIncrementTick( void )
 
 										
 			#ifdef		configUSE_EDF_SCHEDULER
-					XXXX
-					/*Note: 
+					
+					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
 					- need to perform context Switching based on DL 
 					- Remove task from ready list depend on that pointer it have reference to current Task  - REMOVE MACRO shall have EDF Specific implmentation 
@@ -2994,8 +2995,8 @@ BaseType_t xTaskIncrementTick( void )
                     prvAddTaskToReadyList( pxTCB );
 										
 			#ifdef		configUSE_EDF_SCHEDULER
-					XXXX
-					/*Note: 
+					
+					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
 					- need to perform context Switching based on DL 
 					- add task from ready list based on the new deadline not on the priority order. Then Deadline shall be calculated here in advance
@@ -3008,8 +3009,8 @@ BaseType_t xTaskIncrementTick( void )
                     #if ( configUSE_PREEMPTION == 1 )
                         {
 			#ifdef		configUSE_EDF_SCHEDULER
-					XXXX
-					/*Note: 
+					
+					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
 					- need to perform context Switching based on DL information in ready list by setting xSwitchRequired
 										
@@ -3658,8 +3659,8 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 
 			#ifdef configUSE_EDF_SCHEDULER
 			
-			XXXXX
-			/* - Increment IDLE Task Deadline to be the max value ever - */
+			 
+			/*TODO: - Increment IDLE Task Deadline to be the max value ever - */
 			
 			#endif
         #if ( configUSE_PREEMPTION == 0 )
