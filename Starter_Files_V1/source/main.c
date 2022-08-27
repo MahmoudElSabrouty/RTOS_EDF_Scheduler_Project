@@ -70,6 +70,10 @@
 /*CPU Load Measurements */
 int task_1_in_time =0,task_1_out_time =0,task_1_total_time =0;
 int task_2_in_time =0,task_2_out_time =0,task_2_total_time =0;
+int task_3_in_time =0,task_3_out_time =0,task_3_total_time =0;
+int task_4_in_time =0,task_4_out_time =0,task_4_total_time =0;
+
+
 int system_time =0;
 float cpu_load =0;
 /* Constants to setup I/O and processor. */
@@ -81,6 +85,10 @@ float cpu_load =0;
 TaskHandle_t task_1_Handler  = NULL;
 
 TaskHandle_t task_2_Handler  = NULL;
+
+TaskHandle_t task_3_Handler  = NULL;
+
+TaskHandle_t task_4_Handler  = NULL;
 
 char runTimeStatsBuff[190];
 /*
@@ -145,6 +153,59 @@ void Task_2( void * pvParameters )
 }
 
 
+/* Task to be created. */
+void Task_3( void * pvParameters )
+{
+	int i =0;
+	 TickType_t xLastWakeTime;
+	int startTime =0, endTime =0;
+  xLastWakeTime = xTaskGetTickCount();
+  vTaskSetApplicationTaskTag( NULL, (TaskHookFunction_t) 3);
+
+    for( ;; )
+    {
+
+			
+			for (i =0; i<100000;i++)
+			{
+				i =i;
+			}
+				
+			vTaskDelayUntil(&xLastWakeTime, 100);
+			
+			
+			startTime = xTaskGetTickCount();
+    }
+}
+
+
+
+/* Task to be created. */
+void Task_4( void * pvParameters )
+{
+	int i =0;
+	 TickType_t xLastWakeTime;
+	int startTime =0, endTime =0;
+  xLastWakeTime = xTaskGetTickCount();
+  vTaskSetApplicationTaskTag( NULL, (TaskHookFunction_t) 4);
+
+    for( ;; )
+    {
+
+			
+			for (i =0; i<100000;i++)
+			{
+				i =i;
+			}
+				
+			vTaskDelayUntil(&xLastWakeTime, 100);
+			
+			
+			startTime = xTaskGetTickCount();
+    }
+}
+
+
 
 /*
  * Application entry point:
@@ -174,7 +235,28 @@ int main( void )
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     2,/* Priority at which the task is created. */
-                    &task_1_Handler  );      /* Used to pass out the created task's handle. */
+                    &task_2_Handler  );      /* Used to pass out the created task's handle. */
+
+
+										/* Create the task, storing the handle. */
+					xTaskCreate(
+                    Task_3,       /* Function that implements the task. */
+                    "Task 3",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    &task_3_Handler  );      /* Used to pass out the created task's handle. */
+
+										
+																				/* Create the task, storing the handle. */
+					xTaskCreate(
+                    Task_4,       /* Function that implements the task. */
+                    "Task 4",          /* Text name for the task. */
+                    100,      /* Stack size in words, not bytes. */
+                    ( void * ) 0,    /* Parameter passed into the task. */
+                    1,/* Priority at which the task is created. */
+                    &task_4_Handler  );      /* Used to pass out the created task's handle. */
+
 
 										
 										

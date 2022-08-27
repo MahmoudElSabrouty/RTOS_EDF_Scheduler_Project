@@ -81,6 +81,9 @@ to exclude the API function. */
 /*CPU Load Measurements */
 extern int task_1_in_time,task_1_out_time,task_1_total_time;
 extern int task_2_in_time,task_2_out_time,task_2_total_time;
+extern int task_3_in_time,task_3_out_time,task_3_total_time;
+extern int task_4_in_time,task_4_out_time,task_4_total_time;
+
 extern int system_time;
 extern float cpu_load;
 
@@ -98,9 +101,19 @@ extern float cpu_load;
 																					task_2_out_time = T1TC;\
 																					task_2_total_time += (task_2_out_time- task_2_in_time);\
 																					GPIO_write(PORT_0, PIN3, PIN_IS_LOW);\
+																				}else if((int)pxCurrentTCB->pxTaskTag == 3)\
+																				{\
+																					task_3_out_time = T1TC;\
+																					task_3_total_time += (task_3_out_time- task_3_in_time);\
+																					GPIO_write(PORT_0, PIN4, PIN_IS_LOW);\
+																				}else if((int)pxCurrentTCB->pxTaskTag == 4)\
+																				{\
+																					task_4_out_time = T1TC;\
+																					task_4_total_time += (task_4_out_time- task_4_in_time);\
+																					GPIO_write(PORT_0, PIN5, PIN_IS_LOW);\
 																				}\
 																				system_time = T1TC;\
-																				(cpu_load = (100*(task_1_total_time + task_2_total_time)/(float)system_time));\
+																				(cpu_load = (100*(task_1_total_time + task_2_total_time +task_3_total_time +task_4_total_time)/(float)system_time));\
 																			}while(0)
 																		
 #define traceTASK_SWITCHED_IN()			do\
@@ -113,6 +126,14 @@ extern float cpu_load;
 																				{\
 																					task_2_in_time = T1TC;\
 																					GPIO_write(PORT_0, PIN3, PIN_IS_HIGH);\
+																				}else if((int)pxCurrentTCB->pxTaskTag == 3)\
+																				{\
+																					task_3_in_time = T1TC;\
+																					GPIO_write(PORT_0, PIN4, PIN_IS_HIGH);\
+																				}else if((int)pxCurrentTCB->pxTaskTag == 4)\
+																				{\
+																					task_4_in_time = T1TC;\
+																					GPIO_write(PORT_0, PIN5, PIN_IS_HIGH);\
 																				}\
 																			}while(0)
 																				
