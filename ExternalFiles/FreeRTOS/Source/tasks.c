@@ -2989,21 +2989,21 @@ BaseType_t xTaskIncrementTick( void )
                     {
                         mtCOVERAGE_TEST_MARKER();
                     }
-
-                    /* Place the unblocked task into the appropriate ready
-                     * list. */
-                    prvAddTaskToReadyList( pxTCB );
-										
 			#ifdef		configUSE_EDF_SCHEDULER
 					
-					/*TODO: 
+					/*DONE: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
 					- need to perform context Switching based on DL 
-					- add task from ready list based on the new deadline not on the priority order. Then Deadline shall be calculated here in advance
-										
+					- add task from ready list based on the new deadline not on the priority order. 
+						Then Deadline shall be calculated here in advance				
 					*/
-									
+										
+									listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), ( pxTCB)->xTaskPeriod + xTickCount);
 			#endif
+                    /* Place the unblocked task into the appropriate ready
+                     * list. */
+                  prvAddTaskToReadyList( pxTCB );
+										
                     /* A task being unblocked cannot cause an immediate
                      * context switch if preemption is turned off. */
                     #if ( configUSE_PREEMPTION == 1 )
