@@ -2932,7 +2932,7 @@ BaseType_t xTaskIncrementTick( void )
                 else
                 {
 
-			#ifdef		configUSE_EDF_SCHEDULER
+			#if		(configUSE_EDF_SCHEDULER == 1)
 
 					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
@@ -2965,7 +2965,7 @@ BaseType_t xTaskIncrementTick( void )
                     }
 
 										
-			#ifdef		configUSE_EDF_SCHEDULER
+			#if		(configUSE_EDF_SCHEDULER == 1)
 					
 					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
@@ -2989,7 +2989,7 @@ BaseType_t xTaskIncrementTick( void )
                     {
                         mtCOVERAGE_TEST_MARKER();
                     }
-			#ifdef		configUSE_EDF_SCHEDULER
+			#if	(configUSE_EDF_SCHEDULER == 1)
 					
 					/*DONE: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
@@ -3008,7 +3008,7 @@ BaseType_t xTaskIncrementTick( void )
                      * context switch if preemption is turned off. */
                     #if ( configUSE_PREEMPTION == 1 )
                         {
-			#ifdef		configUSE_EDF_SCHEDULER
+			#if		(configUSE_EDF_SCHEDULER == 1)
 					
 					/*TODO: 
 					- Assumption tasks are ordered in Delayed list based on their wake time . 
@@ -3016,7 +3016,21 @@ BaseType_t xTaskIncrementTick( void )
 										
 					*/
 									
-			#endif
+													
+													
+													/* Preemption is on, but a context switch should
+                             * only be performed if the unblocked task has a
+                             * DeadLine that is equal to or higher than the
+                             * currently executing task. */
+                            if( (listGET_LIST_ITEM_VALUE(&(pxTCB)->xStateListItem)) >= (listGET_LIST_ITEM_VALUE(&(pxCurrentTCB)->xStateListItem)) )
+                            {
+                                xSwitchRequired = pdTRUE;
+                            }
+                            else
+                            {
+                                mtCOVERAGE_TEST_MARKER();
+                            }
+			#else
 
 													/* Preemption is on, but a context switch should
                              * only be performed if the unblocked task has a
@@ -3030,6 +3044,7 @@ BaseType_t xTaskIncrementTick( void )
                             {
                                 mtCOVERAGE_TEST_MARKER();
                             }
+			#endif
                         }
                     #endif /* configUSE_PREEMPTION */
                 }
@@ -3657,7 +3672,7 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
          * is responsible for freeing the deleted task's TCB and stack. */
         prvCheckTasksWaitingTermination();
 
-			#ifdef configUSE_EDF_SCHEDULER
+			#if (configUSE_EDF_SCHEDULER == 1)
 			
 			 
 			/*DONE: - Increment IDLE Task Deadline to be the max value ever - */
