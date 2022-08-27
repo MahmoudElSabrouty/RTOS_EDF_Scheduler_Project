@@ -2177,7 +2177,7 @@ void vTaskStartScheduler( void )
                                    portPRIVILEGE_BIT,  /* In effect ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), but tskIDLE_PRIORITY is zero. */
                                    &xIdleTaskHandle ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
         }
-    #endif /* configSUPPORT_STATIC_ALLOCATION */
+    #endif /* configSUPPORT_STATIC_ALLOCATION & configUSE_EDF_SCHEDULER */
 				
 				
     
@@ -2913,6 +2913,9 @@ BaseType_t xTaskIncrementTick( void )
          * look any further down the list. */
         if( xConstTickCount >= xNextTaskUnblockTime )
         {
+					
+
+					
             for( ; ; )
             {
                 if( listLIST_IS_EMPTY( pxDelayedTaskList ) != pdFALSE )
@@ -2927,7 +2930,18 @@ BaseType_t xTaskIncrementTick( void )
                 }
                 else
                 {
-                    /* The delayed list is not empty, get the value of the
+
+			#ifdef		configUSE_EDF_SCHEDULER
+					XXXX
+					/*Note: 
+					- Assumption tasks are ordered in Delayed list based on their wake time . 
+					- need to perform context Switching based on DL 
+					- RTOS execute Head of the task make sure it's the required one
+					*/
+									
+			#endif
+
+									/* The delayed list is not empty, get the value of the
                      * item at the head of the delayed list.  This is the time
                      * at which the task at the head of the delayed list must
                      * be removed from the Blocked state. */
@@ -2949,6 +2963,18 @@ BaseType_t xTaskIncrementTick( void )
                         mtCOVERAGE_TEST_MARKER();
                     }
 
+										
+			#ifdef		configUSE_EDF_SCHEDULER
+					XXXX
+					/*Note: 
+					- Assumption tasks are ordered in Delayed list based on their wake time . 
+					- need to perform context Switching based on DL 
+					- Remove task from ready list depend on that pointer it have reference to current Task  - REMOVE MACRO shall have EDF Specific implmentation 
+										
+					*/
+									
+			#endif
+
                     /* It is time to remove the item from the Blocked state. */
                     listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
 
@@ -2966,12 +2992,32 @@ BaseType_t xTaskIncrementTick( void )
                     /* Place the unblocked task into the appropriate ready
                      * list. */
                     prvAddTaskToReadyList( pxTCB );
-
+										
+			#ifdef		configUSE_EDF_SCHEDULER
+					XXXX
+					/*Note: 
+					- Assumption tasks are ordered in Delayed list based on their wake time . 
+					- need to perform context Switching based on DL 
+					- add task from ready list based on the new deadline not on the priority order. Then Deadline shall be calculated here in advance
+										
+					*/
+									
+			#endif
                     /* A task being unblocked cannot cause an immediate
                      * context switch if preemption is turned off. */
                     #if ( configUSE_PREEMPTION == 1 )
                         {
-                            /* Preemption is on, but a context switch should
+			#ifdef		configUSE_EDF_SCHEDULER
+					XXXX
+					/*Note: 
+					- Assumption tasks are ordered in Delayed list based on their wake time . 
+					- need to perform context Switching based on DL information in ready list by setting xSwitchRequired
+										
+					*/
+									
+			#endif
+
+													/* Preemption is on, but a context switch should
                              * only be performed if the unblocked task has a
                              * priority that is equal to or higher than the
                              * currently executing task. */
@@ -3610,6 +3656,12 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
          * is responsible for freeing the deleted task's TCB and stack. */
         prvCheckTasksWaitingTermination();
 
+			#ifdef configUSE_EDF_SCHEDULER
+			
+			XXXXX
+			/* - Increment IDLE Task Deadline to be the max value ever - */
+			
+			#endif
         #if ( configUSE_PREEMPTION == 0 )
             {
                 /* If we are not using preemption we keep forcing a task switch to
