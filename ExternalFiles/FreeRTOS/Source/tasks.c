@@ -228,7 +228,7 @@
 		
 #else
 
-#define prvAddTaskToReadyList( pxTCB ) /*xGenericListIteam must contain the deadline value */ \
+#define prvAddTaskToReadyList( pxTCB ) /*Add task to ReadyList with Calculated DeadLine Valze - xStateListItem must contain the deadline value */ \
 vListInsert( &(xReadyTasksListEDF), &( ( pxTCB )->xStateListItem ) )
 		
 #endif
@@ -2162,7 +2162,7 @@ void vTaskStartScheduler( void )
     #elseif (configUSE_EDF_SCHEDULER == 1)
 				{
 						tickType initIDLEPeriod = HIGHEST_PRIORITY_IDLE_TASK;
-						xReturn = xTaskCreatePeriodic( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
+						xIdleTaskHandle = xTaskCreatePeriodic( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
 																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), NULL,
 																					initIDLEPeriod);
 				}
@@ -3660,8 +3660,8 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 			#ifdef configUSE_EDF_SCHEDULER
 			
 			 
-			/*TODO: - Increment IDLE Task Deadline to be the max value ever - */
-			
+			/*DONE: - Increment IDLE Task Deadline to be the max value ever - */
+			listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem ), ( xIdleTaskHandle)->xTaskPeriod + xTickCount);
 			#endif
         #if ( configUSE_PREEMPTION == 0 )
             {
