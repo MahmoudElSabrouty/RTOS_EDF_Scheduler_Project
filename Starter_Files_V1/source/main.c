@@ -115,13 +115,13 @@ void Task_1( void * pvParameters )
     {
 //			vTaskDelay(500);
 			
-			for (i =0; i<1000000;i++)
+			for (i =0; i<10;i++)
 			{
 				i =i;
 			}
 				
 			
-			vTaskDelayUntil(&xLastWakeTime, 500);
+			vTaskDelayUntil(&xLastWakeTime, 10);
 			
 			
     }
@@ -140,12 +140,12 @@ void Task_2( void * pvParameters )
     {
 
 			
-			for (i =0; i<100000;i++)
+			for (i =0; i<100;i++)
 			{
 				i =i;
 			}
 				
-			vTaskDelayUntil(&xLastWakeTime, 100);
+			vTaskDelayUntil(&xLastWakeTime, 50);
 			
 			
 			startTime = xTaskGetTickCount();
@@ -166,12 +166,12 @@ void Task_3( void * pvParameters )
     {
 
 			
-			for (i =0; i<100000;i++)
+			for (i =0; i<100;i++)
 			{
 				i =i;
 			}
 				
-			vTaskDelayUntil(&xLastWakeTime, 100);
+			vTaskDelayUntil(&xLastWakeTime, 20);
 			
 			
 			startTime = xTaskGetTickCount();
@@ -193,12 +193,12 @@ void Task_4( void * pvParameters )
     {
 
 			
-			for (i =0; i<100000;i++)
+			for (i =0; i<1;i++)
 			{
 				i =i;
 			}
 				
-			vTaskDelayUntil(&xLastWakeTime, 100);
+			vTaskDelayUntil(&xLastWakeTime, 40);
 			
 			
 			startTime = xTaskGetTickCount();
@@ -219,43 +219,43 @@ int main( void )
 
 
 										/* Create the task, storing the handle. */
-					xTaskCreate(
+					xTaskPeriodicCreate(
                     Task_1,       /* Function that implements the task. */
                     "Task 1",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     1,/* Priority at which the task is created. */
-                    &task_1_Handler  );      /* Used to pass out the created task's handle. */
+                    &task_1_Handler, 10 );      /* Used to pass out the created task's handle. */
 
 
 										/* Create the task, storing the handle. */
-					xTaskCreate(
+					xTaskPeriodicCreate(
                     Task_2,       /* Function that implements the task. */
                     "Task 2",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
                     2,/* Priority at which the task is created. */
-                    &task_2_Handler  );      /* Used to pass out the created task's handle. */
+                    &task_2_Handler, 50);      /* Used to pass out the created task's handle. */
 
 
 										/* Create the task, storing the handle. */
-					xTaskCreate(
+					xTaskPeriodicCreate(
                     Task_3,       /* Function that implements the task. */
                     "Task 3",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
-                    1,/* Priority at which the task is created. */
-                    &task_3_Handler  );      /* Used to pass out the created task's handle. */
+                    3,/* Priority at which the task is created. */
+                    &task_3_Handler, 20);      /* Used to pass out the created task's handle. */
 
 										
 																				/* Create the task, storing the handle. */
-					xTaskCreate(
+					xTaskPeriodicCreate(
                     Task_4,       /* Function that implements the task. */
                     "Task 4",          /* Text name for the task. */
                     100,      /* Stack size in words, not bytes. */
                     ( void * ) 0,    /* Parameter passed into the task. */
-                    1,/* Priority at which the task is created. */
-                    &task_4_Handler  );      /* Used to pass out the created task's handle. */
+                    4,/* Priority at which the task is created. */
+                    &task_4_Handler,40);      /* Used to pass out the created task's handle. */
 
 
 										

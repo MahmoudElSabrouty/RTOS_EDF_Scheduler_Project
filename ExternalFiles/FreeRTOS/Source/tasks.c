@@ -230,7 +230,7 @@
 
 #define prvAddTaskToReadyList( pxTCB ) /*Add task to ReadyList with Calculated DeadLine Valze - xStateListItem must contain the deadline value */ \
 vListInsert( &(xReadyTasksListEDF), &( ( pxTCB )->xStateListItem ) )
-		
+
 #endif
 /*-----------------------------------------------------------*/
 
@@ -2127,7 +2127,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 void vTaskStartScheduler( void )
 {
     BaseType_t xReturn;
-
+		TCB_t * volatile pxTempTCB = NULL;
     /* Add the idle task at the lowest priority. */
     #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
         {
@@ -2162,9 +2162,10 @@ void vTaskStartScheduler( void )
     #elseif (configUSE_EDF_SCHEDULER == 1)
 				{
 						tickType initIDLEPeriod = HIGHEST_PRIORITY_IDLE_TASK;
-						xIdleTaskHandle = xTaskCreatePeriodic( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
-																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), NULL,
+						xReturn = xTaskCreatePeriodic( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
+																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), xIdleTaskHandle,
 																					initIDLEPeriod);
+
 				}
 		#else
 
@@ -2222,8 +2223,14 @@ void vTaskStartScheduler( void )
                 _impure_ptr = &( pxCurrentTCB->xNewLib_reent );
             }
         #endif /* configUSE_NEWLIB_REENTRANT */
-
+//#if (configUSE_EDF_SCHEDULER == 1)
+//		pxTempTCB = (TCB_t * ) listGET_OWNER_OF_HEAD_ENTRY( &(xReadyTasksListEDF ) );
+//		xNextTaskUnblockTime =   listGET_LIST_ITEM_VALUE(&(pxTempTCB)->xStateListItem);
+	
+//#else
         xNextTaskUnblockTime = portMAX_DELAY;
+				
+//#endif				
         xSchedulerRunning = pdTRUE;
         xTickCount = ( TickType_t ) configINITIAL_TICK_COUNT;
 
