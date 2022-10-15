@@ -2159,11 +2159,11 @@ void vTaskStartScheduler( void )
                 xReturn = pdFAIL;
             }
         }
-    #elseif (configUSE_EDF_SCHEDULER == 1)
+    #elif (configUSE_EDF_SCHEDULER == 1)
 				{
-						tickType initIDLEPeriod = HIGHEST_PRIORITY_IDLE_TASK;
-						xReturn = xTaskCreatePeriodic( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
-																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), xIdleTaskHandle,
+						TickType_t initIDLEPeriod = HIGHEST_PRIORITY_IDLE_TASK;
+						xReturn = xTaskPeriodicCreate( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
+																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), NULL,
 																					initIDLEPeriod);
 
 				}
