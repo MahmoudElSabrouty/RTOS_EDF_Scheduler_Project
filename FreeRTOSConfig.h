@@ -57,6 +57,8 @@
 #define configIDLE_SHOULD_YIELD		0
 #define configUSE_TIME_SLICING    0
 
+
+#define tskIDLE_STACK_SIZE			( ( unsigned short ) 90 )
 #define configQUEUE_REGISTRY_SIZE 	0
 
 #define configSUPPORT_STATIC_ALLOCATION	0
