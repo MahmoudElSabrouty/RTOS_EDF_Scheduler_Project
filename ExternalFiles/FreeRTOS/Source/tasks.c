@@ -360,9 +360,9 @@ PRIVILEGED_DATA TCB_t * volatile pxCurrentTCB = NULL;
  /* E.C. : the new RedyList */
 #if ( configUSE_EDF_SCHEDULER == 1 )
 PRIVILEGED_DATA static List_t xReadyTasksListEDF; /*< Ready tasks ordered by their deadline. */
-#else
-PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ]; /*< Prioritised ready tasks. */
 #endif
+PRIVILEGED_DATA static List_t pxReadyTasksLists[ configMAX_PRIORITIES ]; /*< Prioritised ready tasks. */
+
 PRIVILEGED_DATA static List_t xDelayedTaskList1;                         /*< Delayed tasks. */
 PRIVILEGED_DATA static List_t xDelayedTaskList2;                         /*< Delayed tasks (two lists are used - one for delays that have overflowed the current tick count. */
 PRIVILEGED_DATA static List_t * volatile pxDelayedTaskList;              /*< Points to the delayed task list currently being used. */
@@ -756,7 +756,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
     {
         TCB_t * pxNewTCB;
         BaseType_t xReturn;
-				int currentTick =0;
+
 				
         /* If the stack grows down then allocate the stack then the TCB so the stack
          * does not grow into the TCB.  Likewise if the stack grows up then allocate
@@ -830,10 +830,9 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB ) PRIVILEGED_FUNCTION;
 					pxNewTCB->xTaskPeriod = period;		
 
 
-					currentTick = xTaskGetTickCount();
+
 					/*E.C. : insert the period value in the generic list iteam before to add the task in RL: */
-					listSET_LIST_ITEM_VALUE( &( ( pxNewTCB)->xStateListItem ), ( pxNewTCB
-																	)->xTaskPeriod + currentTick);
+					listSET_LIST_ITEM_VALUE( &( ( pxNewTCB)->xStateListItem ), ( pxNewTCB)->xTaskPeriod + xTaskGetTickCount());
 					
 					  prvAddNewTaskToReadyList( pxNewTCB );
             xReturn = pdPASS;
@@ -1635,7 +1634,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 #endif /* INCLUDE_uxTaskPriorityGet */
 /*-----------------------------------------------------------*/
 
-#if (( INCLUDE_uxTaskPriorityGet == 1) && (configUSE_EDF_SCHEDULER != 1 ))
+#if ( INCLUDE_uxTaskPriorityGet == 1 )
 
     UBaseType_t uxTaskPriorityGetFromISR( const TaskHandle_t xTask )
     {
@@ -1675,7 +1674,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 #endif /* INCLUDE_uxTaskPriorityGet */
 /*-----------------------------------------------------------*/
 
-#if (( INCLUDE_vTaskPrioritySet == 1 ) & (configUSE_EDF_SCHEDULER != 1 ))
+#if ( INCLUDE_vTaskPrioritySet == 1 )
 
     void vTaskPrioritySet( TaskHandle_t xTask,
                            UBaseType_t uxNewPriority )
@@ -2127,7 +2126,7 @@ static void prvAddNewTaskToReadyList( TCB_t * pxNewTCB )
 void vTaskStartScheduler( void )
 {
     BaseType_t xReturn;
-		TCB_t * volatile pxTempTCB = NULL;
+
     /* Add the idle task at the lowest priority. */
     #if ( configSUPPORT_STATIC_ALLOCATION == 1 )
         {
@@ -2159,11 +2158,14 @@ void vTaskStartScheduler( void )
                 xReturn = pdFAIL;
             }
         }
-    #elif (configUSE_EDF_SCHEDULER == 1)
+    #else /* if ( configSUPPORT_STATIC_ALLOCATION == 0 ) */
+        {
+
+						#if (configUSE_EDF_SCHEDULER == 1)
 				{
 						TickType_t initIDLEPeriod = HIGHEST_PRIORITY_IDLE_TASK;
 						xReturn = xTaskPeriodicCreate( prvIdleTask, "IDLE", tskIDLE_STACK_SIZE, 
-																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), NULL,
+																					(void * ) NULL, ( tskIDLE_PRIORITY | portPRIVILEGE_BIT ), &xIdleTaskHandle,
 																					initIDLEPeriod);
 
 				}
@@ -2180,8 +2182,8 @@ void vTaskStartScheduler( void )
                                    &xIdleTaskHandle ); /*lint !e961 MISRA exception, justified as it is not a redundant explicit cast to all supported compilers. */
         }
     #endif /* configSUPPORT_STATIC_ALLOCATION & configUSE_EDF_SCHEDULER */
-				
-				
+					}							
+    #endif /* configSUPPORT_STATIC_ALLOCATION */
     
 		#if ( configUSE_TIMERS == 1 )
         {
@@ -2939,15 +2941,6 @@ BaseType_t xTaskIncrementTick( void )
                 else
                 {
 
-			#if		(configUSE_EDF_SCHEDULER == 1)
-
-					/*TODO: 
-					- Assumption tasks are ordered in Delayed list based on their wake time . 
-					- need to perform context Switching based on DL 
-					- RTOS execute Head of the task make sure it's the required one
-					*/
-									
-			#endif
 
 									/* The delayed list is not empty, get the value of the
                      * item at the head of the delayed list.  This is the time
@@ -2972,16 +2965,7 @@ BaseType_t xTaskIncrementTick( void )
                     }
 
 										
-			#if		(configUSE_EDF_SCHEDULER == 1)
-					
-					/*TODO: 
-					- Assumption tasks are ordered in Delayed list based on their wake time . 
-					- need to perform context Switching based on DL 
-					- Remove task from ready list depend on that pointer it have reference to current Task  - REMOVE MACRO shall have EDF Specific implmentation 
-										
-					*/
-									
-			#endif
+
 
                     /* It is time to remove the item from the Blocked state. */
                     listREMOVE_ITEM( &( pxTCB->xStateListItem ) );
@@ -3005,7 +2989,7 @@ BaseType_t xTaskIncrementTick( void )
 						Then Deadline shall be calculated here in advance				
 					*/
 										
-									listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), ( pxTCB)->xTaskPeriod + xTickCount);
+						listSET_LIST_ITEM_VALUE( &( ( pxTCB )->xStateListItem ), ( pxTCB)->xTaskPeriod + xTaskGetTickCount());
 			#endif
                     /* Place the unblocked task into the appropriate ready
                      * list. */
@@ -3013,33 +2997,15 @@ BaseType_t xTaskIncrementTick( void )
 										
                     /* A task being unblocked cannot cause an immediate
                      * context switch if preemption is turned off. */
-                    #if ( configUSE_PREEMPTION == 1 )
+                    #if ( configUSE_PREEMPTION == 1 ) 
                         {
 			#if		(configUSE_EDF_SCHEDULER == 1)
 					
-					/*TODO: 
-					- Assumption tasks are ordered in Delayed list based on their wake time . 
-					- need to perform context Switching based on DL information in ready list by setting xSwitchRequired
-										
-					*/
-									
-													
-													
-													/* Preemption is on, but a context switch should
-                             * only be performed if the unblocked task has a
-                             * DeadLine that is equal to or higher than the
-                             * currently executing task. */
-                            if( (listGET_LIST_ITEM_VALUE(&(pxTCB)->xStateListItem)) >= (listGET_LIST_ITEM_VALUE(&(pxCurrentTCB)->xStateListItem)) )
-                            {
                                 xSwitchRequired = pdTRUE;
-                            }
-                            else
-                            {
-                                mtCOVERAGE_TEST_MARKER();
-                            }
+
 			#else
 
-													/* Preemption is on, but a context switch should
+							/* Preemption is on, but a context switch should
                              * only be performed if the unblocked task has a
                              * priority that is equal to or higher than the
                              * currently executing task. */
@@ -3683,7 +3649,9 @@ static portTASK_FUNCTION( prvIdleTask, pvParameters )
 			
 			 
 			/*DONE: - Increment IDLE Task Deadline to be the max value ever - */
-			listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem ), ( xIdleTaskHandle)->xTaskPeriod + xTickCount);
+			listSET_LIST_ITEM_VALUE( &( ( xIdleTaskHandle )->xStateListItem ), ( xIdleTaskHandle)->xTaskPeriod + xTaskGetTickCount());
+
+			
 			#endif
         #if ( configUSE_PREEMPTION == 0 )
             {
@@ -3901,6 +3869,7 @@ static void prvInitialiseTaskLists( void )
 				vListInitialise( &xReadyTasksListEDF );
 		}
 		#else
+		
     for( uxPriority = ( UBaseType_t ) 0U; uxPriority < ( UBaseType_t ) configMAX_PRIORITIES; uxPriority++ )
     {
         vListInitialise( &( pxReadyTasksLists[ uxPriority ] ) );
