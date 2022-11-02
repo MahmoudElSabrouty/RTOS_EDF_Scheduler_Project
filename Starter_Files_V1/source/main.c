@@ -65,6 +65,12 @@
 #include "serial.h"
 #include "GPIO.h"
 
+#define TASK1_LOAD 5000
+#define TASK2_LOAD 29000
+#define TASK3_LOAD 52000
+#define TASK4_LOAD 29500
+
+
 
 /*-----------------------------------------------------------*/
 /*CPU Load Measurements */
@@ -91,11 +97,7 @@ TaskHandle_t task_3_Handler  = NULL;
 TaskHandle_t task_4_Handler  = NULL;
 
 char runTimeStatsBuff[190];
-/*
- * Configure the processor for use with the Keil demo board.  This is very
- * minimal as most of the setup is managed by the settings in the project
- * file.
- */
+
 static void prvSetupHardware( void );
 /*-----------------------------------------------------------*/
 
@@ -115,7 +117,7 @@ void Task_1( void * pvParameters )
     {
 //			vTaskDelay(500);
 			
-			for (i =0; i<10;i++)
+			for (i =0; i<TASK1_LOAD;i++)
 			{
 				i =i;
 			}
@@ -140,7 +142,7 @@ void Task_2( void * pvParameters )
     {
 
 			
-			for (i =0; i<100;i++)
+			for (i =0; i<TASK2_LOAD;i++)
 			{
 				i =i;
 			}
@@ -166,7 +168,7 @@ void Task_3( void * pvParameters )
     {
 
 			
-			for (i =0; i<100;i++)
+			for (i =0; i<TASK3_LOAD;i++)
 			{
 				i =i;
 			}
@@ -193,7 +195,7 @@ void Task_4( void * pvParameters )
     {
 
 			
-			for (i =0; i<1;i++)
+			for (i =0; i<TASK4_LOAD;i++)
 			{
 				i =i;
 			}

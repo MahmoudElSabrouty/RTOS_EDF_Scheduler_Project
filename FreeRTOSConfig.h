@@ -52,7 +52,7 @@
 #define configMINIMAL_STACK_SIZE	( ( unsigned short ) 90 )
 #define configTOTAL_HEAP_SIZE		( ( size_t ) 13 * 1024 )
 #define configMAX_TASK_NAME_LEN		( 8 )
-#define configUSE_TRACE_FACILITY	0
+#define configUSE_TRACE_FACILITY	1
 #define configUSE_16_BIT_TICKS		0
 #define configIDLE_SHOULD_YIELD		0
 #define configUSE_TIME_SLICING    0
@@ -77,6 +77,13 @@ to exclude the API function. */
 #define INCLUDE_vTaskSuspend			1
 #define INCLUDE_vTaskDelayUntil			1
 #define INCLUDE_vTaskDelay				1
+
+/* Configure runtime status */
+#define configUSE_STATS_FORMATTING_FUNCTIONS 1
+#define configGENERATE_RUN_TIME_STATS 1
+#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()
+#define portGET_RUN_TIME_COUNTER_VALUE() (T1TC)
+
 
 #define configUSE_APPLICATION_TASK_TAG	1
 
@@ -140,12 +147,4 @@ extern float cpu_load;
 																			}while(0)
 																				
 
-#if 0
-/* Configure RunTime Stats*/
-#define configGENERATE_RUN_TIME_STATS							1
-#define portGET_RUN_TIME_COUNTER_VALUE()					(T1TC)
-#define portCONFIGURE_TIMER_FOR_RUN_TIME_STATS()	
-#define configUSE_STATS_FORMATTING_FUNCTIONS    	1
-
-#endif
 #endif /* FREERTOS_CONFIG_H */
